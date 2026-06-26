@@ -94,6 +94,11 @@ input::placeholder, textarea::placeholder { color: #BBA8C8; font-style: italic; 
 .ancestor-photo-box .photo-plus { font-size: 22px; color: #C49A2A; font-weight: 200; line-height: 1; }
 .ancestor-photo-box .photo-label { font-size: 6px; letter-spacing: 1.5px; color: #7A6A82; font-family: Georgia, serif; text-align: center; }
 .ancestor-photo-box .photo-remove { position: absolute; top: 4px; right: 4px; background: rgba(74,26,82,0.85); color: white; border: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 11px; display: none; align-items: center; justify-content: center; z-index: 10; line-height: 1; }
+.child-entry { border: 1px solid #DDD5E5; background: #FAF7FC; padding: 8px 10px; margin-bottom: 6px; }
+.child-entry > label { font-size: 8.5px; letter-spacing: 1.5px; color: #6B3070; font-weight: bold; display: block; margin-bottom: 4px; font-family: Georgia, serif; text-transform: uppercase; }
+.child-entry input { border: 1px solid #C4B0CC; padding: 4px 8px; font-family: Georgia, serif; font-size: 12px; color: #1A1A1A; background: white; width: 100%; height: 28px; outline: none; margin-bottom: 6px; box-sizing: border-box; }
+.children-subsection { margin-top: 10px; border-top: 1px solid #EDE5F2; padding-top: 8px; }
+.children-subsection-label { font-size: 8.5px; letter-spacing: 1.5px; color: #4A1A52; font-weight: bold; font-family: Georgia, serif; text-transform: uppercase; margin-bottom: 6px; display: block; }
 .note-entry { border: 1px solid #C4B0CC; background: white; padding: 12px; margin-bottom: 10px; }
 .note-entry > label { font-size: 8.5px; letter-spacing: 1.5px; color: #4A1A52; font-weight: bold; display: block; margin-bottom: 6px; font-family: Georgia, serif; text-transform: uppercase; }
 .note-entry textarea { border: 1px solid #C4B0CC; padding: 8px; font-family: Georgia, serif; font-size: 12px; color: #1A1A1A; background: white; width: 100%; min-height: 120px; outline: none; resize: vertical; box-sizing: border-box; line-height: 1.7; }
@@ -298,57 +303,12 @@ input::placeholder, textarea::placeholder { color: #BBA8C8; font-style: italic; 
       </div>
 
 
+      <div class="section-header">MARRIAGES & ADDITIONAL SPOUSES</div>
+      <div id="spouses-container"></div>
+      <button class="add-btn" onclick="addSpouse()">+ Add Spouse</button>
       <div class="source-box">
-        <div id="src-marriage1" class="source-entries"></div>
-        <button class="source-add-btn" onclick="addSource('src-marriage1')">+ Add Source / URL</button>
-      </div>
-      <div class="section-header">1ST MARRIAGE</div>
-      <div class="field-row cols-2">
-        <div class="field"><label>Date</label><input type="text" placeholder="Day Month Year"></div>
-        <div class="field"><label>Announcement</label><input type="text" placeholder="Publication, date..."></div>
-      </div>
-      <div class="field-row cols-2">
-        <div class="field"><label>City, County, State</label><input type="text" placeholder="Location..."></div>
-        <div class="field"><label>Place</label><input type="text" placeholder="Venue or church..."></div>
-      </div>
-      <div class="field-row cols-2">
-        <div class="field"><label>Spouse</label><input type="text" placeholder="Full name..."></div>
-        <div class="field"><label>Spouse Birth Date</label><input type="text" placeholder="Day Month Year"></div>
-      </div>
-      <div class="field-row cols-2">
-        <div class="field"><label>Spouse's Father</label><input type="text" placeholder="Full name..."></div>
-        <div class="field"><label>Spouse's Mother</label><input type="text" placeholder="Full name..."></div>
-      </div>
-      <div class="field"><label>Children from 1st Marriage</label><textarea rows="2" placeholder="List children's names..."></textarea></div>
-
-
-      <div class="source-box">
-        <div id="src-marriage2" class="source-entries"></div>
-        <button class="source-add-btn" onclick="addSource('src-marriage2')">+ Add Source / URL</button>
-      </div>
-      <div class="section-header">2ND MARRIAGE</div>
-      <div class="field-row cols-2">
-        <div class="field"><label>Date</label><input type="text" placeholder="Day Month Year"></div>
-        <div class="field"><label>Announcement</label><input type="text" placeholder="Publication, date..."></div>
-      </div>
-      <div class="field-row cols-2">
-        <div class="field"><label>City, County, State</label><input type="text" placeholder="Location..."></div>
-        <div class="field"><label>Place</label><input type="text" placeholder="Venue or church..."></div>
-      </div>
-      <div class="field-row cols-2">
-        <div class="field"><label>Spouse</label><input type="text" placeholder="Full name..."></div>
-        <div class="field"><label>Spouse Birth Date</label><input type="text" placeholder="Day Month Year"></div>
-      </div>
-      <div class="field-row cols-2">
-        <div class="field"><label>Spouse's Father</label><input type="text" placeholder="Full name..."></div>
-        <div class="field"><label>Spouse's Mother</label><input type="text" placeholder="Full name..."></div>
-      </div>
-      <div class="field"><label>Children from 2nd Marriage</label><textarea rows="2" placeholder="List children's names..."></textarea></div>
-
-
-      <div class="source-box">
-        <div id="src-additional" class="source-entries"></div>
-        <button class="source-add-btn" onclick="addSource('src-additional')">+ Add Source / URL</button>
+        <div id="src-marriages-only" class="source-entries"></div>
+        <button class="source-add-btn" onclick="addSource('src-marriages-only')">+ Add Source / URL</button>
       </div>
       <div class="section-header">ADDITIONAL RECORDS</div>
       <div class="field"><label>Immigration / Naturalization</label><input type="text" placeholder="Date, port, record details..."></div>
@@ -541,6 +501,137 @@ function sortCensus() {
     // Renumber label
     const lbl = entry.querySelector('label');
     if (lbl) lbl.textContent = `Census Record ${idx + 1}`;
+  });
+}
+
+// ─────────────────────────────────
+// MARRIAGES & SPOUSES
+// ─────────────────────────────────
+let spouseCount = 0;
+
+function addSpouse() {
+  spouseCount++;
+  const id = spouseCount;
+  const container = document.getElementById('spouses-container');
+  const div = document.createElement('div');
+  div.className = 'sibling-entry';
+  div.id = `spouse-entry-${id}`;
+  div.innerHTML = `
+    <label>Spouse ${id}</label>
+    <div style="margin-bottom:8px;">
+      <label style="font-size:8.5px;letter-spacing:1.5px;color:#4A1A52;font-weight:bold;display:block;margin-bottom:3px;font-family:Georgia,serif;text-transform:uppercase;">Name</label>
+      <input type="text" placeholder="Full name..." style="border:1px solid #C4B0CC;padding:4px 8px;font-family:Georgia,serif;font-size:12px;color:#1A1A1A;background:white;width:100%;height:28px;outline:none;box-sizing:border-box;">
+    </div>
+    <div class="sibling-year-row" style="margin-bottom:8px;">
+      <div class="sibling-year-field">
+        <label>DOB</label>
+        <input type="text" placeholder="Day Month Year">
+      </div>
+      <div class="sibling-year-field">
+        <label>DOD</label>
+        <input type="text" placeholder="Day Month Year">
+      </div>
+    </div>
+    <div class="sibling-year-row" style="margin-bottom:6px;">
+      <div class="sibling-year-field">
+        <label>DOM</label>
+        <input type="text" placeholder="Day Month Year">
+      </div>
+      <div class="sibling-year-field">
+        <label>POM</label>
+        <input type="text" placeholder="City, County, State...">
+      </div>
+    </div>
+    <div class="children-subsection">
+      <span class="children-subsection-label">Children from this union</span>
+      <div id="children-of-${id}"></div>
+      <button class="add-btn" style="margin-top:2px;" onclick="addChild(${id})">+ Add Child</button>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function addChild(spouseId) {
+  const container = document.getElementById(`children-of-${spouseId}`);
+  const childNum = container.querySelectorAll('.child-entry').length + 1;
+  const div = document.createElement('div');
+  div.className = 'child-entry';
+  div.innerHTML = `
+    <label>Child ${childNum}</label>
+    <input type="text" placeholder="Full name...">
+    <div class="sibling-sex-row" style="margin-bottom:6px;">
+      <div class="sex-option" onclick="selectChildSex(this)">
+        <span class="circle-check"></span>
+        <span>Male</span>
+      </div>
+      <div class="sex-option" onclick="selectChildSex(this)">
+        <span class="circle-check"></span>
+        <span>Female</span>
+      </div>
+    </div>
+    <div class="sibling-year-row">
+      <div class="sibling-year-field">
+        <label>DOB</label>
+        <input type="text" placeholder="Day Month Year" onblur="sortChildren(${spouseId})">
+      </div>
+      <div class="sibling-year-field">
+        <label>DOD</label>
+        <input type="text" placeholder="Day Month Year">
+      </div>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function selectChildSex(option) {
+  const entry = option.closest('.child-entry');
+  entry.querySelectorAll('.circle-check').forEach(c => c.classList.remove('checked'));
+  option.querySelector('.circle-check').classList.add('checked');
+}
+
+// ─────────────────────────────────
+// SORT CHILDREN BY DOB (oldest first)
+// ─────────────────────────────────
+function sortChildren(spouseId) {
+  const container = document.getElementById(`children-of-${spouseId}`);
+  const entries = Array.from(container.querySelectorAll('.child-entry'));
+  if (entries.length < 2) return;
+
+  const data = entries.map(entry => {
+    const txts = entry.querySelectorAll('input[type="text"]');
+    const sexEl = entry.querySelector('.sex-option .circle-check.checked');
+    const dobRaw = txts[1]?.value?.trim() || '';
+    const yearMatch = dobRaw.match(/\d{4}/);
+    return {
+      name: txts[0]?.value || '',
+      dob:  dobRaw,
+      dobNum: yearMatch ? parseInt(yearMatch[0]) : 9999,
+      dod:  txts[2]?.value || '',
+      sex:  sexEl ? sexEl.closest('.sex-option').querySelector('span:last-child').textContent.trim() : ''
+    };
+  });
+
+  data.sort((a, b) => a.dobNum - b.dobNum);
+
+  entries.forEach((entry, idx) => {
+    const d = data[idx];
+    const txts = entry.querySelectorAll('input[type="text"]');
+    if (txts[0]) txts[0].value = d.name;
+    if (txts[1]) txts[1].value = d.dob;
+    if (txts[2]) txts[2].value = d.dod;
+
+    // Restore sex
+    entry.querySelectorAll('.circle-check').forEach(c => c.classList.remove('checked'));
+    if (d.sex) {
+      entry.querySelectorAll('.sex-option').forEach(opt => {
+        if (opt.querySelector('span:last-child')?.textContent?.trim() === d.sex) {
+          opt.querySelector('.circle-check')?.classList.add('checked');
+        }
+      });
+    }
+
+    const lbl = entry.querySelector('label');
+    if (lbl) lbl.textContent = `Child ${idx + 1}`;
   });
 }
 
