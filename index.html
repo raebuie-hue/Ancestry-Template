@@ -150,10 +150,8 @@ input::placeholder, textarea::placeholder { color: #BBA8C8; font-style: italic; 
 <body>
 
 <div class="controls">
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab(0)">Ancestor Sheet</button>
-  </div>
   <button class="print-btn" onclick="window.print()">PRINT / SAVE PDF</button>
+  <button class="print-btn" onclick="newSheet()">NEW SHEET</button>
 </div>
 
 <div class="document">
@@ -405,11 +403,7 @@ input::placeholder, textarea::placeholder { color: #BBA8C8; font-style: italic; 
     <div class="footer-left">NEVERMORE LIVELY · DESIGNED BY A CERTIFIED GENEALOGIST · © All Rights Reserved</div>
     <div class="footer-right">PAGE ___ OF ___</div>
   </div>
-  <div class="sheet-actions no-print">
-    <button class="btn-new" onclick="newSheet()">✦ NEW SHEET</button>
-    <button class="btn-load" onclick="loadSheet()">↑ LOAD SHEET</button>
-    <button class="btn-save" onclick="saveSheet()">↓ SAVE SHEET</button>
-  </div>
+
 
 </div>
 
