@@ -358,14 +358,14 @@ input::placeholder, textarea::placeholder { color: #BBA8C8; font-style: italic; 
       </div>
       <div class="field">
         <label>Literacy</label>
-        <div class="literacy-section">
-          <div class="literacy-item">
-            <span style="color:#BBA8C8;font-style:italic;font-family:Georgia,serif;font-size:12px;font-weight:normal;">Could read:</span>
-            <span class="circle-check" onclick="this.classList.toggle('checked')"></span>
+        <div class="sex-row">
+          <div class="sex-option" onclick="this.querySelector('.circle-check').classList.toggle('checked')">
+            <span class="circle-check literacy-check"></span>
+            <span>Could read</span>
           </div>
-          <div class="literacy-item">
-            <span style="color:#BBA8C8;font-style:italic;font-family:Georgia,serif;font-size:12px;font-weight:normal;">Could write:</span>
-            <span class="circle-check" onclick="this.classList.toggle('checked')"></span>
+          <div class="sex-option" onclick="this.querySelector('.circle-check').classList.toggle('checked')">
+            <span class="circle-check literacy-check"></span>
+            <span>Could write</span>
           </div>
         </div>
       </div>
@@ -481,7 +481,7 @@ function addCensusRecord() {
     <div class="sibling-year-row" style="margin-bottom:8px;">
       <div class="sibling-year-field">
         <label>Year</label>
-        <input type="text" placeholder="e.g. 1880">
+        <input type="text" placeholder="e.g. 1880" onblur="sortCensus()">
       </div>
       <div class="sibling-year-field">
         <label>Age</label>
@@ -492,12 +492,56 @@ function addCensusRecord() {
       <label>Residence</label>
       <input type="text" placeholder="City, County, State..." style="border:1px solid #C4B0CC;padding:4px 8px;font-family:Georgia,serif;font-size:12px;color:#1A1A1A;background:white;width:100%;height:28px;outline:none;box-sizing:border-box;">
     </div>
-    <div>
+    <div style="margin-bottom:8px;">
       <label>Role in Household</label>
       <input type="text" placeholder="e.g. Head, Wife, Son, Daughter, Boarder..." style="border:1px solid #C4B0CC;padding:4px 8px;font-family:Georgia,serif;font-size:12px;color:#1A1A1A;background:white;width:100%;height:28px;outline:none;box-sizing:border-box;">
     </div>
+    <div>
+      <label>Occupation</label>
+      <input type="text" placeholder="e.g. Farmer, Seamstress, Laborer..." style="border:1px solid #C4B0CC;padding:4px 8px;font-family:Georgia,serif;font-size:12px;color:#1A1A1A;background:white;width:100%;height:28px;outline:none;box-sizing:border-box;">
+    </div>
   `;
   container.appendChild(div);
+}
+
+// ─────────────────────────────────
+// SORT CENSUS RECORDS BY YEAR
+// ─────────────────────────────────
+function sortCensus() {
+  const container = document.getElementById('census-container');
+  const entries = Array.from(container.querySelectorAll('.sibling-entry'));
+  if (entries.length < 2) return;
+
+  // Extract data from each entry
+  const data = entries.map(entry => {
+    const inp = entry.querySelectorAll('input[type="text"]');
+    const yearRaw = inp[0]?.value?.trim() || '';
+    return {
+      year:       yearRaw,
+      yearNum:    parseInt(yearRaw) || 9999,
+      age:        inp[1]?.value || '',
+      residence:  inp[2]?.value || '',
+      role:       inp[3]?.value || '',
+      occupation: inp[4]?.value || ''
+    };
+  });
+
+  // Sort ascending by year — blanks go to end
+  data.sort((a, b) => a.yearNum - b.yearNum);
+
+  // Write sorted data back in place
+  entries.forEach((entry, idx) => {
+    const inp = entry.querySelectorAll('input[type="text"]');
+    const d = data[idx];
+    if (inp[0]) inp[0].value = d.year;
+    if (inp[1]) inp[1].value = d.age;
+    if (inp[2]) inp[2].value = d.residence;
+    if (inp[3]) inp[3].value = d.role;
+    if (inp[4]) inp[4].value = d.occupation;
+    // Renumber label
+    const lbl = entry.querySelector('label');
+    if (lbl) lbl.textContent = `Census Record ${idx + 1}`;
+  });
 }
 
 // Add source / URL entry
@@ -731,7 +775,7 @@ function saveSheet() {
   if (sexEl) data.sex = sexEl.closest('.sex-option').querySelector('span:last-child').textContent.trim();
 
   // Literacy
-  const lits = document.querySelectorAll('.literacy-item .circle-check');
+  const lits = document.querySelectorAll('.literacy-check');
   data.literacyRead  = lits[0]?.classList.contains('checked') || false;
   data.literacyWrite = lits[1]?.classList.contains('checked') || false;
 
@@ -761,7 +805,8 @@ function saveSheet() {
     const inp = entry.querySelectorAll('input[type="text"]');
     data.censusRecords.push({
       year: inp[0]?.value || '', age: inp[1]?.value || '',
-      residence: inp[2]?.value || '', role: inp[3]?.value || ''
+      residence: inp[2]?.value || '', role: inp[3]?.value || '',
+      occupation: inp[4]?.value || ''
     });
   });
 
@@ -807,7 +852,7 @@ function clearSheet() {
   document.querySelectorAll('.sex-check').forEach(c => c.classList.remove('checked'));
 
   // Clear literacy
-  document.querySelectorAll('.literacy-item .circle-check').forEach(c => c.classList.remove('checked'));
+  document.querySelectorAll('.literacy-check').forEach(c => c.classList.remove('checked'));
 
   // Clear ancestor photo
   removePhoto({ stopPropagation: ()=>{} }, 'inner-ancestor-main', 'remove-ancestor-main', 'ANCESTOR PHOTO');
@@ -866,7 +911,7 @@ function restoreSheet(data) {
   }
 
   // Literacy
-  const lits = document.querySelectorAll('.literacy-item .circle-check');
+  const lits = document.querySelectorAll('.literacy-check');
   if (data.literacyRead)  lits[0]?.classList.add('checked');
   if (data.literacyWrite) lits[1]?.classList.add('checked');
 
@@ -916,6 +961,7 @@ function restoreSheet(data) {
     if (inp[1]) inp[1].value = rec.age;
     if (inp[2]) inp[2].value = rec.residence;
     if (inp[3]) inp[3].value = rec.role;
+    if (inp[4]) inp[4].value = rec.occupation || '';
   });
 
   // Notes
